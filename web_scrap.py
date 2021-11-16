@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 
 url="https://www.sweetwater.com/c987--Classical_and_Nylon_String_Guitars"
 
+#Configurations for hidding that we are actually a bot :´)
 options = Options()
 options.add_argument('--no-sandbox')
 options.add_argument('--start-maximized')
@@ -30,25 +31,20 @@ driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
                 "navigator.__proto__ = newProto;"
         })
 
+# Start the process of entering the page
 driver.get(url)
 
+# Clicking on the page's cookie check button and closing contact box
 driver.find_element(By.XPATH, "//button[@class='ccpa-content_cta-button']").click()
 driver.find_element(By.XPATH, "//span[@class='site-contact-preview__close']").click()
-
+# If the cookie check box is still there, a human should do the job
 WebDriverWait(driver, 10).until(EC.invisibility_of_element_located((By.XPATH, "//div[@id='ccpa-cookie']")))
 
-driver.find_element(By.XPATH, "//div[@class='product-card__info']//h2//a").click()
+# Getting all table rows
+table = driver.find_elements(By.XPATH, "//li[@class='table__row']")
 
-name = driver.find_elements(By.XPATH, "//h1[@class='product__name']//span")
+data = {}
 
-for i in name:
-  print(i.text)
-
-
-
-#teste = driver.find_elements(By.XPATH, "//div[@class='product-card__info']//h2//a")
-
-#for guitar in teste:
-#  guitar.click()
-
-#driver.quit()
+# Getting header and body and appending to data dict
+for i in table:
+  data[i.find_element(By.CLASS_NAME, 'table__header').text.replace(':', '')] = i.find_element(By.CLASS_NAME, 'table__cell').text
