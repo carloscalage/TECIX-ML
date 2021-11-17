@@ -42,7 +42,7 @@ WebDriverWait(driver, 10).until(EC.invisibility_of_element_located((By.XPATH, "/
 
 products = driver.find_elements(By.XPATH, "//h2[@class='product-card__name']//a")
 
-index = 14
+index = 0
 q = range(len(products))
 
 for elem in q:
@@ -57,7 +57,8 @@ for elem in q:
   dollars = driver.find_element(By.TAG_NAME, 'dollars').text
   cents = driver.find_element(By.TAG_NAME, 'cents').text
   data['Price']  = dollars + cents
-
+  data['Manufacturer'] = driver.find_element(By.XPATH, '//h1[@class="product__name"]//span').text
+  
   # Getting all table rows
   table = driver.find_elements(By.XPATH, "//li[@class='table__row']")
 
