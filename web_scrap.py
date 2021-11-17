@@ -28,27 +28,31 @@ driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
         })
 driver.maximize_window()
 
-url="https://www.sweetwater.com/c987--Classical_and_Nylon_String_Guitars?all&sb=low2high&pn=all"
+url="https://www.sweetwater.com/c600--6_string_Acoustic_Guitars?all=&ost=&sb=low2high&pn=4"
 
 # Start the process of entering the page
 driver.get(url)
+
+WebDriverWait(driver, 60).until(EC.invisibility_of_element_located((By.ID, "px-captcha")))
 
 # Clicking on the page's cookie check button and closing contact box
 driver.find_element(By.XPATH, "//button[@class='ccpa-content_cta-button']").click()
 driver.find_element(By.XPATH, "//span[@class='site-contact-preview__close']").click()
 # If the cookie check box is still there, a human should do the job
-WebDriverWait(driver, 10).until(EC.invisibility_of_element_located((By.XPATH, "//div[@id='ccpa-cookie']")))
+WebDriverWait(driver, 60).until(EC.invisibility_of_element_located((By.XPATH, "//div[@id='ccpa-cookie']")))
 
 # Find the all products in the page
 products = driver.find_elements(By.XPATH, "//h2[@class='product-card__name']//a")
 
 # Keep track of how many products and the index
 # This avoid problems of keeping track with the variable above, cause js will remove the elements from the page, making them unreachable
-index = 104
+index = 0
 q = range(len(products))
 
 for elem in q:
   data = {}
+
+  WebDriverWait(driver, 60).until(EC.invisibility_of_element_located((By.ID, "px-captcha")))
 
   driver.execute_script('document.getElementsByClassName("site-contact-preview__mini hide-visual")[0].remove()')
 
@@ -57,6 +61,8 @@ for elem in q:
   products[index].click()
 
   time.sleep(1)
+
+  WebDriverWait(driver, 60).until(EC.invisibility_of_element_located((By.ID, "px-captcha")))
 
   dollars = driver.find_element(By.TAG_NAME, 'dollars').text
   cents = driver.find_element(By.TAG_NAME, 'cents').text
