@@ -1,6 +1,5 @@
 import pandas as pd
 import time
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -29,7 +28,7 @@ driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
         })
 driver.maximize_window()
 
-url="https://www.sweetwater.com/c987--Classical_and_Nylon_String_Guitars"
+url="https://www.sweetwater.com/c987--Classical_and_Nylon_String_Guitars?all&sb=low2high&pn=all"
 
 # Start the process of entering the page
 driver.get(url)
@@ -40,14 +39,19 @@ driver.find_element(By.XPATH, "//span[@class='site-contact-preview__close']").cl
 # If the cookie check box is still there, a human should do the job
 WebDriverWait(driver, 10).until(EC.invisibility_of_element_located((By.XPATH, "//div[@id='ccpa-cookie']")))
 
+# Find the all products in the page
 products = driver.find_elements(By.XPATH, "//h2[@class='product-card__name']//a")
 
-index = 0
+# Keep track of how many products and the index
+# This avoid problems of keeping track with the variable above, cause js will remove the elements from the page, making them unreachable
+index = 104
 q = range(len(products))
 
 for elem in q:
   data = {}
-  
+
+  driver.execute_script('document.getElementsByClassName("site-contact-preview__mini hide-visual")[0].remove()')
+
   time.sleep(1)
   
   products[index].click()
@@ -58,7 +62,7 @@ for elem in q:
   cents = driver.find_element(By.TAG_NAME, 'cents').text
   data['Price']  = dollars + cents
   data['Manufacturer'] = driver.find_element(By.XPATH, '//h1[@class="product__name"]//span').text
-  
+
   # Getting all table rows
   table = driver.find_elements(By.XPATH, "//li[@class='table__row']")
 
@@ -66,7 +70,7 @@ for elem in q:
   for i in table:
     data[i.find_element(By.CLASS_NAME, 'table__header').text.replace(':', '')] = i.find_element(By.CLASS_NAME, 'table__cell').text
 
-  print(data)
+  print(data, ',')
 
   driver.back()
   time.sleep(1)
