@@ -28,7 +28,7 @@ driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
         })
 driver.maximize_window()
 
-url="https://www.sweetwater.com/c600--6_string_Acoustic_Guitars?all=&ost=&sb=low2high&pn=4"
+url="https://www.sweetwater.com/c600--6_string_Acoustic_Guitars?all=&ost=&sb=low2high&pn=20"
 
 # Start the process of entering the page
 driver.get(url)
@@ -53,6 +53,7 @@ for elem in q:
   data = {}
 
   WebDriverWait(driver, 60).until(EC.invisibility_of_element_located((By.ID, "px-captcha")))
+  products = driver.find_elements(By.XPATH, "//h2[@class='product-card__name']//a")
 
   driver.execute_script('document.getElementsByClassName("site-contact-preview__mini hide-visual")[0].remove()')
 
@@ -80,5 +81,4 @@ for elem in q:
 
   driver.back()
   time.sleep(1)
-  products = driver.find_elements(By.XPATH, "//h2[@class='product-card__name']//a")
   index += 1
